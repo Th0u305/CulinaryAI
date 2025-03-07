@@ -43,7 +43,7 @@ const RecipeCard = ({ recipe }: RecipeCardProps) => {
         /> */}
 
         <Image
-          className="absolute w-96 h-66 object-cover transform transition-transform duration-700 hover:scale-105"
+          className="absolute h-80 object-cover transform transition-transform duration-700 hover:scale-105"
           src={recipe.imageUrl}
           alt="Example"
           width={500}

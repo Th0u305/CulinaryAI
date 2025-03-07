@@ -38,7 +38,7 @@ const Recipes = () => {
   };
 
   return (
-    <div className="min-h-screen mt-48 pb-16 px-4 w-6xl mx-auto">
+    <div className="min-h-screen mt-48 pb-16 px-4 mx-auto max-w-6xl">
       <div className="container mx-auto animate-fade-in">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold tracking-tight mb-3 md:text-4xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
