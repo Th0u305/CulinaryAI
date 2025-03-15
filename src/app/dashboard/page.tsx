@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react';
+  // import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -9,11 +9,10 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { ChevronRight, Heart, History, Plus, Settings, Bookmark, Bell } from 'lucide-react';
-import { sampleRecipes } from '@/data/sample-recipes';
-import RecipeCard from '@/components/sections/RecipeCard';
+// import RecipeCard from '@/components/sections/RecipeCard';
 
 const Dashboard = () => {
-  const [savedRecipes] = useState(sampleRecipes.slice(0, 3));
+  // const [savedRecipes] = useState(sampleRecipes.slice(0, 3));
 
   return (
     <div className="min-h-screen mt-48 pb-16 px-4">
@@ -58,9 +57,9 @@ const Dashboard = () => {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {savedRecipes.map((recipe) => (
+              {/* {savedRecipes.map((recipe) => (
                 <RecipeCard key={recipe.id} recipe={recipe} />
-              ))}
+              ))} */}
               <Card className="flex flex-col items-center justify-center h-full min-h-[300px] border-dashed">
                 <CardContent className="py-8 flex flex-col items-center text-center">
                   <div className="rounded-full bg-primary/10 p-3 mb-4">

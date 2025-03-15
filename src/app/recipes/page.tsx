@@ -1,40 +1,28 @@
-"use client"
-import { useState, useEffect } from 'react';
-import { sampleRecipes } from '@/data/sample-recipes';
-import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
-import CuisineSelector from '@/components/sections/CuisineSelector';
-import RecipeGrid from '@/components/sections/RecipeGrid';
+"use client";
+import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import CuisineSelector from "@/components/sections/CuisineSelector";
+import RecipeCard from "@/components/sections/RecipeCard";
+import useAllData from "@/hooks/useAllData";
 
 const Recipes = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [cuisine, setCuisine] = useState('All');
-  const [filteredRecipes, setFilteredRecipes] = useState(sampleRecipes);
+  const [searchQuery, setSearchQuery] = useState("");
+  const { recipes, setLoading, setLimitRecipe, loading, limitRecipe } =
+    useAllData();
 
   useEffect(() => {
-    let result = sampleRecipes;
-    
-    // Filter by search query
-    if (searchQuery) {
-      result = result.filter((recipe) => 
-        recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        recipe.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        recipe.ingredients.some((ingredient) => 
-          ingredient.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
-    }
-    
-    // Filter by cuisine
-    if (cuisine !== 'All') {
-      result = result.filter((recipe) => recipe.cuisine === cuisine);
-    }
-    
-    setFilteredRecipes(result);
-  }, [searchQuery, cuisine]);
+    setLimitRecipe(limitRecipe);
+  }, [setLimitRecipe, limitRecipe]);
 
-  const handleCuisineChange = (selectedCuisine: string) => {
-    setCuisine(selectedCuisine);
+  const handleCuisineChange = (name: string) => {
+    const filterRecipe = recipes.filter((item) => item.country === name);
+
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setLimitRecipe(filterRecipe);
+    }, 1000);
   };
 
   return (
@@ -48,7 +36,7 @@ const Recipes = () => {
             Browse our complete recipe collection
           </p>
         </div>
-        
+
         <div className="max-w-3xl mx-auto mb-8">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -61,12 +49,31 @@ const Recipes = () => {
             />
           </div>
         </div>
-        
         <div className="mb-16">
           <CuisineSelector onCuisineChange={handleCuisineChange} />
         </div>
-        
-        <RecipeGrid recipes={filteredRecipes} />
+
+        <div className="mt-24">
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-medium">
+                {loading
+                  ? "Searching..."
+                  : `Found ${limitRecipe.length} matching recipes`}
+              </h3>
+            </div>
+
+            <div
+              className={
+                loading ? "opacity-50 transition-opacity duration-300" : ""
+              }
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <RecipeCard />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

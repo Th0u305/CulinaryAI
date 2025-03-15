@@ -1,84 +1,105 @@
+"use client";
 
-'use client';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Plus, PlusIcon, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import useAllData from "@/hooks/useAllData";
+import { useForm } from "react-hook-form";
+import  Ingredients  from "@/typeHooks/types-recipe";
+import { useState } from "react";
 
-import { useState, useRef, KeyboardEvent } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Plus, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+// interface IngredientInputProps {
+//   onIngredientsChange: (ingredients: string[]) => void;
+// }
 
-interface IngredientInputProps {
-  onIngredientsChange: (ingredients: string[]) => void;
+type FormData = {
+  name : string;
+};
+
+export  interface IngredientsName {
+  name: string;
 }
 
-const IngredientInput = ({ onIngredientsChange }: IngredientInputProps) => {
-  const [ingredients, setIngredients] = useState<string[]>(['chicken', 'garlic', 'olive oil']);
-  const [inputValue, setInputValue] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  const addIngredient = () => {
-    if (inputValue.trim() && !ingredients.includes(inputValue.trim().toLowerCase())) {
-      const newIngredients = [...ingredients, inputValue.trim().toLowerCase()];
-      setIngredients(newIngredients);
-      onIngredientsChange(newIngredients);
-      setInputValue('');
+const IngredientInput = () => {
+
+  const {limitIngredients, setLimitIngredients, ingredientName, setIngredientName} = useAllData();
+  const { register, handleSubmit, reset, formState: { } } = useForm<FormData>();
+  const [errorMSG, setErrorMSG] = useState("")
+  
+
+  
+  const onSubmit = handleSubmit((data)=>{
+
+    if (data.name.length < 2) {
+      return setErrorMSG("Please type more than 2 word")
     }
-    inputRef.current?.focus();
-  };
-
-  const removeIngredient = (index: number) => {
-    const newIngredients = ingredients.filter((_, i) => i !== index);
-    setIngredients(newIngredients);
-    onIngredientsChange(newIngredients);
-  };
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addIngredient();
-    } else if (e.key === 'Backspace' && inputValue === '' && ingredients.length > 0) {
-      const newIngredients = ingredients.slice(0, -1);
-      setIngredients(newIngredients);
-      onIngredientsChange(newIngredients);
+    else{
+      setErrorMSG("")
     }
+    const newRecipe: Ingredients = {
+      name: data.name,
+    };
+    setLimitIngredients((prev) => [...prev, newRecipe]);   
+    reset()
+  });
+
+
+  const removeIngredient = (name: string) => {
+    const filter = limitIngredients.filter((item)=>item.name !== name)    
+    setLimitIngredients(filter)
+    ingredientName.unshift(name)    
   };
+
+  const addIngredient = (name:string) =>{
+
+    const newRecipe: Ingredients = {
+      name: name,
+    };
+    setLimitIngredients((prev) => [...prev, newRecipe]);   
+    const filter = ingredientName.filter((item)=>item !== name)    
+    setIngredientName(filter)        
+  }
+
 
   return (
     <div className="space-y-4 w-full">
-      <div className="flex items-center space-x-2">
+      <form onSubmit={onSubmit}  className="flex items-center space-x-2">
         <Input
-          ref={inputRef}
           type="text"
+          {...register("name")}
           placeholder="Add an ingredient..."
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
           required
           className="flex-grow"
         />
-        <Button onClick={addIngredient} aria-label="Add ingredient" className='button-color text-white hover:bg-[#ff9a2e] bg-[#ff9a2e] active:bg-[#e09c53]'>
+        <Button
+          type="submit"
+          aria-label="Add ingredient"
+          className="button-color text-white hover:bg-[#ff9a2e] bg-[#ff9a2e] active:bg-[#e09c53]"
+        >
           <Plus className="h-4 w-4 mr-1" />
           Add
         </Button>
-      </div>
-      
+      </form>
+      <p className="text-red-500 mb-2">{errorMSG}</p>
       <div className="flex flex-wrap gap-2 min-h-[3rem] p-2 bg-background/50 backdrop-blur-sm rounded-lg border">
-        {ingredients.length > 0 ? (
-          ingredients.map((ingredient, index) => (
+        {limitIngredients?.length > 0 ? (
+          limitIngredients?.map((item, index:number) => (
             <div
               key={index}
               className={cn(
-                "px-3 py-1.5 rounded-full text-sm font-medium bg-primary/10  dark:text-white dark:bg-primary/20",
+                "px-3 py-1.5 rounded-full text-sm font-medium bg-primary/10 dark:text-white dark:bg-primary/20",
                 "flex items-center gap-1.5 animate-fade-in"
               )}
             >
-              {ingredient}
+              {item.name}
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => removeIngredient(index)}
+                onClick={() => removeIngredient(item.name)}
                 className="h-4 w-4 p-0 rounded-full hover:bg-primary/20 "
-                aria-label={`Remove ${ingredient}`}
+                aria-label={`Remove ${item}`}
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -89,6 +110,27 @@ const IngredientInput = ({ onIngredientsChange }: IngredientInputProps) => {
             Add ingredients to find matching recipes
           </div>
         )}
+      </div>
+      <div className="flex flex-wrap gap-2 h-52 overflow-y-scroll p-2 bg-background/50 backdrop-blur-sm rounded-lg border">
+        {ingredientName.map((item, index) => (
+          <div
+            key={index}
+            className={cn(
+              "px-3 py-1.5 rounded-full text-sm font-medium bg-primary/10 dark:text-white dark:bg-primary/20 flex items-center gap-1.5 animate-fade-in"
+            )}
+          >
+            {item}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => addIngredient(item)}
+              className="h-4 w-4 p-0 rounded-full hover:bg-primary/20 "
+              aria-label={`Remove ${item}`}
+            >
+              <PlusIcon className="h-8 w-8" />
+            </Button>
+          </div>
+        ))}
       </div>
     </div>
   );

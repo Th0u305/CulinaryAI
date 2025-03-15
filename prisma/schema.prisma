@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type IngredientsNutrients {
+  carbohydrates String
+  fats          String
+  proteins      String
+}
+
+type RecipesNutritionFacts {
+  carbohydrates String
+  fats          String
+  protein       String
+}
+
+model ingredients {
+  id                String               @id @default(auto()) @map("_id") @db.ObjectId
+  allergens         String[]
+  calories_per_100g Int
+  category          String
+  id_               Int                  @map("id")
+  name              String
+  nutrients         IngredientsNutrients
+  origin            String
+}
+
+model recipes {
+  id                   String                @id @default(auto()) @map("_id") @db.ObjectId
+  calories_per_serving Int
+  cook_time            String
+  cooking_level        String
+  country              String
+  description          String
+  id_                  Int                   @map("id")
+  image                String
+  ingredients          String[]
+  instructions         String[]
+  name                 String
+  nutrition_facts      RecipesNutritionFacts
+  servings             Int
+  tags                 String[]
+}
+
+model usersData {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}

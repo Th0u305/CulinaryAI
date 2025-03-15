@@ -1,3 +1,4 @@
+"use client"
 import Footer from "@/components/sections/Footer";
 import Hero from "@/components/sections/Hero";
 import Middle from "@/components/sections/Middle";

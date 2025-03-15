@@ -1,80 +1,48 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import CuisineSelector from "./CuisineSelector";
 import IngredientInput from "./IngredientInput";
 import { Search } from "lucide-react";
-import RecipeGrid from "./RecipeGrid";
-import { Recipe } from "./RecipeCard";
-import { sampleRecipes } from "@/data/sample-recipes";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import useAllData from "@/hooks/useAllData";
+import RecipeCard from "./RecipeCard";
 
 export default function CustomTabs() {
-  const [ingredients, setIngredients] = useState<string[]>([
-    "chicken",
-    "garlic",
-    "olive oil",
-  ]);
-  const [cuisine, setCuisine] = useState("All");
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  // Simulate recipe search using sample data
-  const searchRecipes = () => {
-    setLoading(true);
-
-    // Simulate API call with timeout
-    setTimeout(() => {
-      let filteredRecipes = sampleRecipes;
-
-      // Filter by ingredients (recipe must contain at least one ingredient)
-      if (ingredients.length > 0) {
-        filteredRecipes = filteredRecipes.filter((recipe) =>
-          recipe.ingredients.some((recipeIngredient) =>
-            ingredients.some((userIngredient) =>
-              recipeIngredient
-                .toLowerCase()
-                .includes(userIngredient.toLowerCase())
-            )
-          )
-        );
-      }
-
-      // Filter by cuisine
-      if (cuisine !== "All") {
-        filteredRecipes = filteredRecipes.filter(
-          (recipe) => recipe.cuisine === cuisine
-        );
-      }
-
-      setRecipes(filteredRecipes);
-      setLoading(false);
-    }, 800);
-  };
-
-  // Initial search on component mount
-  useEffect(() => {
-    searchRecipes();
-  }, []);
-
-  const handleSearch = () => {
-    searchRecipes();
-  };
+  const { limitRecipe, setLimitRecipe, recipes, limitIngredients, loading, setLoading } =
+    useAllData();
 
   const handleCuisineChange = (selectedCuisine: string) => {
-    setCuisine(selectedCuisine);
-    // Auto-search when cuisine changes
-    setTimeout(searchRecipes, 100);
+    const filterRecipe = recipes.filter(
+      (item) => item.country === selectedCuisine
+    );
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setLimitRecipe(filterRecipe);
+    }, 1000);
   };
 
-  const handleIngredientsChange = (updatedIngredients: string[]) => {
-    setIngredients(updatedIngredients);
+  const handleSearch = () => {
+    const mapped = limitIngredients.map((item) => item.name.toLocaleLowerCase())
+
+    const filteredRecipes = limitRecipe.filter(recipe =>
+      recipe.ingredients.some(ingredient => mapped.includes(ingredient.toLocaleLowerCase()))
+    );
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setLimitRecipe(filteredRecipes)
+    }, 1000);
   };
+
   return (
     <section>
       <div className="flex items-center justify-center flex-col space-y-6 bg-background/30 backdrop-blur-sm p-6 rounded-xl border shadow-sm">
-        <Tabs defaultValue="Ingredient's" className="w-full sm:w-[80%] md:w-[70%]">
+        <Tabs
+          defaultValue="Ingredient's"
+          className="w-full sm:w-[80%] md:w-[70%]"
+        >
           <TabsList className="mb-8">
             <TabsTrigger value="Ingredient's">By Ingredients</TabsTrigger>
             <TabsTrigger value="Cuisine">By Cuisine</TabsTrigger>
@@ -82,10 +50,10 @@ export default function CustomTabs() {
 
           <TabsContent value="Ingredient's">
             <div className="w-full space-y-5">
-              <IngredientInput onIngredientsChange={handleIngredientsChange} />
+              <IngredientInput />
               <div className="flex justify-center pt-2">
                 <Button
-                  onClick={handleSearch}
+                  onClick={() => handleSearch()}
                   size="lg"
                   className="px-8 gap-2 button-color text-white hover:bg-[#ff9a2e] bg-[#ff9a2e] active:bg-[#e09c53]"
                 >
@@ -109,7 +77,7 @@ export default function CustomTabs() {
             <h3 className="text-xl font-medium">
               {loading
                 ? "Searching..."
-                : `Found ${recipes.length} matching recipes`}
+                : `Found ${limitRecipe.length} matching recipes`}
             </h3>
           </div>
 
@@ -118,7 +86,9 @@ export default function CustomTabs() {
               loading ? "opacity-50 transition-opacity duration-300" : ""
             }
           >
-            <RecipeGrid recipes={recipes} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <RecipeCard />
+            </div>
           </div>
         </div>
       </div>

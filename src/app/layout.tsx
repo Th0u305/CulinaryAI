@@ -3,7 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/navbar";
-import { Toaster } from "@/components/ui/sonner";
+import { ContextProvider } from "../ContextProvider/ContextProvider";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -28,8 +29,10 @@ export default function RootLayout({
         >
           <main className="">
             <Navbar />
-            <Toaster />
-            {children}
+            <Toaster position="bottom-right" reverseOrder={false} />
+            <ContextProvider>
+              {children}
+            </ContextProvider>
           </main>
         </ThemeProvider>
       </body>

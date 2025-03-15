@@ -5,13 +5,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AtSign, MapPin, Phone, Send } from 'lucide-react';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 
 const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Simulated form submission
-    toast("Event has been created.")
+    toast.success("Event has been created.")
 
   };
 
@@ -29,7 +29,7 @@ const Contact = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
           <Card className="glass-card">
-            <CardHeader>
+            <CardHeader className='mt-6'>
               <CardTitle>Send Us a Message</CardTitle>
               <CardDescription>
                 Fill out the form below and we ll get back to you as soon as possible.
