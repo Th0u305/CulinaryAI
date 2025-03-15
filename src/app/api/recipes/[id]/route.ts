@@ -11,14 +11,13 @@ export async function GET(req: NextRequest, {params}: {params: Promise<{id : str
   try {
     const recipes = await prisma.recipes.findUnique({
         where : {
-            id : id
+          id : id
         }
     });
     return NextResponse.json(recipes)
     
   } catch (error) {
-       console.log(error);
-       
+      console.log(error); 
     return NextResponse.json({ error: "Failed to fetch recipes" }, { status: 500 });
   }
 }
