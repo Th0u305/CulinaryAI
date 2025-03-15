@@ -1,5 +1,5 @@
 "use client"
-  // import { useState } from 'react';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -9,10 +9,8 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { ChevronRight, Heart, History, Plus, Settings, Bookmark, Bell } from 'lucide-react';
-// import RecipeCard from '@/components/sections/RecipeCard';
 
 const Dashboard = () => {
-  // const [savedRecipes] = useState(sampleRecipes.slice(0, 3));
 
   return (
     <div className="min-h-screen mt-48 pb-16 px-4">

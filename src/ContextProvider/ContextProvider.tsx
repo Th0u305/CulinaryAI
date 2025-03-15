@@ -65,8 +65,9 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
       .then((data) => {
         setRecipes(data);
         setLimitRecipe(data.slice(0,12))
-        if (pathname === "recipes") {
-          setLimitRecipe(data.slice(0,12))        }
+        if (pathname === "recipes"){
+          setLimitRecipe(data.slice(0,12))
+        }
       })
       .catch((err) => console.error("Fetch error:", err));
   }, [pathname]);
@@ -76,14 +77,14 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
       .then((res) => res.json())
       .then((data) => {        
         setAllIngredients(data);
-        setLimitIngredients(data.sort(() => Math.random() - 0.3).slice(0, 3));
+        setLimitIngredients(data?.sort(() => Math?.random() - 0.3)?.slice(0, 3));
       });
   }, []);
 
   useEffect(()=>{
-    const data = allIngredients.map((item:Ingredients) => item.name).sort(()=> Math.random()- 0.3).slice(0,3)       
-    const ingName = (limitRecipe.map((item)=> item.ingredients)).flat()
-    const concat = ingName.concat(data)
+    const data = allIngredients?.map((item:Ingredients) => item?.name)?.slice(0,3)       
+    const ingName = (limitRecipe?.map((item)=> item.ingredients))?.flat()
+    const concat = ingName?.concat(data)
     setIngredientName(concat)
   },[allIngredients,limitRecipe])
 
