@@ -8,8 +8,7 @@ export async function GET() {
     const ingredients = await prisma.ingredients.findMany();
     return NextResponse.json(ingredients);
   } catch (error) {
-       console.log(error);
-       
+      console.log(error); 
     return NextResponse.json({ error: "Failed to fetch recipes" }, { status: 500 });
   }
 }
