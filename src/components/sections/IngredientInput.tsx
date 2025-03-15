@@ -6,7 +6,7 @@ import { Plus, PlusIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import useAllData from "@/hooks/useAllData";
 import { useForm } from "react-hook-form";
-import  Ingredients  from "@/typeHooks/types-recipe";
+import Ingredients from "@/typeHooks/types-recipe";
 import { useState } from "react";
 
 // interface IngredientInputProps {
@@ -14,58 +14,111 @@ import { useState } from "react";
 // }
 
 type FormData = {
-  name : string;
+  name: string;
 };
 
-export  interface IngredientsName {
+export interface IngredientsName {
   name: string;
 }
 
-
 const IngredientInput = () => {
+  const {
+    limitIngredients,
+    setLimitIngredients,
+    ingredientName,
+    setIngredientName,
+  } = useAllData();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: {},
+  } = useForm<FormData>();
+  const [errorMSG, setErrorMSG] = useState("");
 
-  const {limitIngredients, setLimitIngredients, ingredientName, setIngredientName} = useAllData();
-  const { register, handleSubmit, reset, formState: { } } = useForm<FormData>();
-  const [errorMSG, setErrorMSG] = useState("")
-  
-
-  
-  const onSubmit = handleSubmit((data)=>{
-
+  const onSubmit = handleSubmit((data) => {
     if (data.name.length < 2) {
-      return setErrorMSG("Please type more than 2 word")
-    }
-    else{
-      setErrorMSG("")
+      return setErrorMSG("Please type more than 2 word");
+    } else {
+      setErrorMSG("");
     }
     const newRecipe: Ingredients = {
       name: data.name,
+      id: "",
+      calories_per_serving: 0,
+      cook_time: "",
+      cooking_level: "",
+      country: "",
+      description: "",
+      id_: 0,
+      image: "",
+      ingredients: [],
+      instructions: [],
+      nutrition_facts: {
+        carbohydrates: "",
+        fats: "",
+        protein: "",
+      },
+      servings: 0,
+      tags: [],
+      allergens: [],
+      calories_per_100g: 0,
+      category: "",
+      nutrients: {
+        carbohydrates: "",
+        fats: "",
+        proteins: "",
+      },
+      origin: "",
     };
-    setLimitIngredients((prev) => [...prev, newRecipe]);   
-    reset()
+    setLimitIngredients((prev) => [...prev, newRecipe]);
+    reset();
   });
 
-
   const removeIngredient = (name: string) => {
-    const filter = limitIngredients.filter((item)=>item.name !== name)    
-    setLimitIngredients(filter)
-    ingredientName.unshift(name)    
+    const filter = limitIngredients.filter((item) => item.name !== name);
+    setLimitIngredients(filter);
+    ingredientName.unshift(name);
   };
 
-  const addIngredient = (name:string) =>{
-
+  const addIngredient = (name: string) => {
     const newRecipe: Ingredients = {
       name: name,
+      id: "",
+      calories_per_serving: 0,
+      cook_time: "",
+      cooking_level: "",
+      country: "",
+      description: "",
+      id_: 0,
+      image: "",
+      ingredients: [],
+      instructions: [],
+      nutrition_facts: {
+        carbohydrates: "",
+        fats: "",
+        protein: "",
+      },
+      servings: 0,
+      tags: [],
+      allergens: [],
+      calories_per_100g: 0,
+      category: "",
+      nutrients: {
+        carbohydrates: "",
+        fats: "",
+        proteins: "",
+      },
+      origin: "",
     };
-    setLimitIngredients((prev) => [...prev, newRecipe]);   
-    const filter = ingredientName.filter((item)=>item !== name)    
-    setIngredientName(filter)        
-  }
-
+    setLimitIngredients((prev) => [...prev, newRecipe]);
+    const filter = ingredientName.filter((item) => item !== name);
+    setIngredientName(filter);
+  };
 
   return (
     <div className="space-y-4 w-full">
-      <form onSubmit={onSubmit}  className="flex items-center space-x-2">
+      <form onSubmit={onSubmit} className="flex items-center space-x-2">
         <Input
           type="text"
           {...register("name")}
@@ -85,7 +138,7 @@ const IngredientInput = () => {
       <p className="text-red-500 mb-2">{errorMSG}</p>
       <div className="flex flex-wrap gap-2 min-h-[3rem] p-2 bg-background/50 backdrop-blur-sm rounded-lg border">
         {limitIngredients?.length > 0 ? (
-          limitIngredients?.map((item, index:number) => (
+          limitIngredients?.map((item, index: number) => (
             <div
               key={index}
               className={cn(
