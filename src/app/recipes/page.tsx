@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import CuisineSelector from "@/components/sections/CuisineSelector";
 import RecipeCard from "@/components/sections/RecipeCard";
 import useAllData from "@/hooks/useAllData";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Recipes = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,43 +39,71 @@ const Recipes = () => {
           </p>
         </div>
 
-        <div className="max-w-3xl mx-auto mb-8">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              type="text"
-              placeholder="Search recipes by name, description, or ingredient..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
-        <div className="mb-16">
-          <CuisineSelector onCuisineChange={handleCuisineChange} />
-        </div>
-
-        <div className="mt-24">
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xl font-medium">
-                {loading
-                  ? "Searching..."
-                  : `Found ${limitRecipe.length} matching recipes`}
-              </h3>
-            </div>
-
-            <div
-              className={
-                loading ? "opacity-50 transition-opacity duration-300" : ""
-              }
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <RecipeCard />
+        <Tabs defaultValue="recipes">
+          <TabsList>
+            <TabsTrigger value="recipes">Recipes</TabsTrigger>
+            <TabsTrigger value="ingredients">Ingredients</TabsTrigger>
+          </TabsList>
+          <TabsContent value="recipes">
+            <div className="max-w-3xl mx-auto mb-8">
+              <div className="relative mt-14">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  type="text"
+                  placeholder="Search recipes by name, description, or ingredient..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
               </div>
             </div>
-          </div>
-        </div>
+            <div className="mb-12">
+              <CuisineSelector onCuisineChange={handleCuisineChange} />
+            </div>
+
+            <div className="mt-24">
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-xl font-medium">
+                    {loading
+                      ? "Searching..."
+                      : `Found ${limitRecipe.length} matching recipes`}
+                  </h3>
+                </div>
+
+                <div
+                  className={
+                    loading ? "opacity-50 transition-opacity duration-300" : ""
+                  }
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <RecipeCard />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="ingredients">
+            <div>
+               {/* <div className="flex flex-wrap gap-2 rounded-lg border p-2">
+                      {filterRecipe.map((item,index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleCuisineClick(item)}
+                          className={cn(
+                            "px-3 py-1.5 rounded-full text-sm font-medium dark:text-white dark:bg-primary/20 flex items-center gap-1.5 animate-fade-in",
+                            activeCuisine === item
+                              ? "bg-primary text-primary-foreground dark:bg-white dark:text-black"
+                              : "bg-primary/10 hover:bg-muted text-foreground/80"
+                          )}
+                        >
+                          {item}
+                        </button>
+                      ))}
+                    </div> */}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/navbar";
 import { ContextProvider } from "../ContextProvider/ContextProvider";
-import { Toaster } from "react-hot-toast";
+import { Toaster } from "@/components/ui/sonar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -28,9 +28,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <main className="">
-            <Navbar />
-            <Toaster position="bottom-right" reverseOrder={false} />
+            <Toaster richColors position="bottom-right" />
             <ContextProvider>
+              <Navbar />
               {children}
             </ContextProvider>
           </main>
