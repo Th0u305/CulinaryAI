@@ -32,6 +32,8 @@ type RecipesContextType = {
   setLoading: Dispatch<SetStateAction<boolean>>;
   loader: boolean;
   setLoader: Dispatch<SetStateAction<boolean>>;
+  currentPage : number;
+  setCurrentPage : Dispatch<SetStateAction<number>>
 };
 
 const defaultContextValue: RecipesContextType = {
@@ -49,6 +51,8 @@ const defaultContextValue: RecipesContextType = {
   setLoading: () => {},
   loader: false,
   setLoader: () => {},
+  currentPage : 1,
+  setCurrentPage : () => {}
 };
 
 const ContextData = createContext<RecipesContextType>(defaultContextValue);
@@ -61,8 +65,8 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
   const [ingredientName, setIngredientName] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [loader, setLoader] = useState<boolean>(false);
-  
   const pathname = usePathname();
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     fetch("/api/recipes")
@@ -70,13 +74,9 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
       .then((data) => {
         setRecipes(data);
         setLimitRecipe(data?.slice(0, 12));
-        if (pathname === "recipes") {
-          setLimitRecipe(data?.slice(0, 12));
-        }
       })
       .catch((err) => console.error("Fetch error:", err));
   }, [pathname]);
-
 
   useEffect(()=>{
     fetch("/api/limitIngredients")
@@ -93,13 +93,14 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
   useEffect(() => {
     const data = allIngredients?.map((item: Ingredients) => item?.name)
     setIngredientName(data);
-  }, [allIngredients, limitRecipe]);
+  }, [allIngredients]);
 
-  useEffect(() => {
+
+  useEffect(()=>{
     if (recipes.length > 0 && allIngredients.length > 0) {
-      setLoader(true);
+      setLoader(true)
     }
-  }, [recipes, allIngredients]);
+  },[recipes,allIngredients])
 
   const data = {
     recipes,
@@ -116,6 +117,8 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
     setLoading,
     loader,
     setLoader,
+    currentPage,
+    setCurrentPage
   };
 
   return (

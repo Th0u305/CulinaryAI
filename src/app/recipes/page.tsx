@@ -1,30 +1,65 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import CuisineSelector from "@/components/sections/CuisineSelector";
 import RecipeCard from "@/components/sections/RecipeCard";
 import useAllData from "@/hooks/useAllData";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Pagination from "@/components/ui/pagination";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import AllIngLists from "@/components/sections/AllIngLists";
+
+type Inputs = {
+  text: string;
+};
 
 const Recipes = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const { recipes, setLoading, setLimitRecipe, loading, limitRecipe } =
-    useAllData();
+  const {
+    register,
+    handleSubmit,
+    // watch,
+    formState: {},
+  } = useForm<Inputs>();
 
-  useEffect(() => {
-    setLimitRecipe(limitRecipe);
-  }, [setLimitRecipe, limitRecipe]);
+  const {
+    recipes,
+    setLoading,
+    setLimitRecipe,
+    loading,
+    limitRecipe,
+    currentPage,
+  } = useAllData();
+  const [activeCuisine, setActiveCuisine] = useState("");
 
-  const handleCuisineChange = (name: string) => {
-    const filterRecipe = recipes.filter((item) => item.country === name);
+  const handleCuisineChange = (cuisine: string) => {
+    setActiveCuisine(cuisine);
+
+    const filterRecipe = recipes.filter((item) => item.country === cuisine);
 
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       setLimitRecipe(filterRecipe);
     }, 1000);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/recipeByPage/${currentPage}/${activeCuisine}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setLimitRecipe(data);
+        setLoading(false);
+      });
+  }, [currentPage, setLimitRecipe, setLoading, activeCuisine]);
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    fetch(`/api/inputSearch/${data.text}`)
+      .then((res) => res.json())
+      .then((data) => setLimitRecipe(data));
   };
 
   return (
@@ -45,19 +80,27 @@ const Recipes = () => {
             <TabsTrigger value="ingredients">Ingredients</TabsTrigger>
           </TabsList>
           <TabsContent value="recipes">
-            <div className="max-w-3xl mx-auto mb-8">
-              <div className="relative mt-14">
+            <div className="max-w-3xl mx-auto mb-14">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="relative mt-14 flex gap-3"
+              >
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
-                  type="text"
-                  placeholder="Search recipes by name, description, or ingredient..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  {...register("text")}
+                  placeholder="Search recipes by name"
                   className="pl-10"
                 />
-              </div>
+                <Button
+                  type="submit"
+                  variant="default"
+                  className="button-color text-white hover:bg-[#ff9a2e] bg-[#ff9a2e] active:bg-[#e09c53] h-10"
+                >
+                  Search
+                </Button>
+              </form>
             </div>
-            <div className="mb-12">
+            <div>
               <CuisineSelector onCuisineChange={handleCuisineChange} />
             </div>
 
@@ -71,36 +114,22 @@ const Recipes = () => {
                   </h3>
                 </div>
 
-                <div
-                  className={
-                    loading ? "opacity-50 transition-opacity duration-300" : ""
-                  }
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {loading ? (
+                    <div className="col-span-full">
+                      <div className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin mx-auto mt-8 mb-8"></div>
+                    </div>
+                  ) : (
                     <RecipeCard />
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
+            <Pagination></Pagination>
           </TabsContent>
           <TabsContent value="ingredients">
-            <div>
-               {/* <div className="flex flex-wrap gap-2 rounded-lg border p-2">
-                      {filterRecipe.map((item,index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleCuisineClick(item)}
-                          className={cn(
-                            "px-3 py-1.5 rounded-full text-sm font-medium dark:text-white dark:bg-primary/20 flex items-center gap-1.5 animate-fade-in",
-                            activeCuisine === item
-                              ? "bg-primary text-primary-foreground dark:bg-white dark:text-black"
-                              : "bg-primary/10 hover:bg-muted text-foreground/80"
-                          )}
-                        >
-                          {item}
-                        </button>
-                      ))}
-                    </div> */}
+            <div className="mt-14">
+            <AllIngLists />
             </div>
           </TabsContent>
         </Tabs>

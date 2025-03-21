@@ -15,7 +15,8 @@ const useAllData = () => {
     setIngredientName,
     loading,
     setLoading,
-    
+    currentPage,
+    setCurrentPage
   } = useContext(ContextData);
   return {
     recipes,
@@ -29,7 +30,9 @@ const useAllData = () => {
     ingredientName,
     setIngredientName,
     loading,
-    setLoading
+    setLoading,
+    currentPage,
+    setCurrentPage
   };
 };
 

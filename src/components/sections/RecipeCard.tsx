@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardContent,
@@ -6,22 +7,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Clock, ChefHat, Bookmark } from "lucide-react";
+import { Clock, ChefHat, Bookmark, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import useAllData from "@/hooks/useAllData";
 import Recipes from "@/typeHooks/types-recipe";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import IngDetails from "./IngDetails";
+import { useState } from "react";
+import Ingredients from "@/typeHooks/types-recipe";
 
 const RecipeCard = () => {
   const { limitRecipe } = useAllData();
-  
+  const [ingredientDetails, setIngredientDetails] =
+    useState<Ingredients | null>(null);
+
   type DifficultyLevel = "Easy" | "Medium" | "Hard";
-  const difficultyColor= {
+  const difficultyColor = {
     Easy: "text-green-500",
     Medium: "text-amber-700",
     Hard: "text-red-500",
+  };
+
+  const handleIng = async (ing: string) => {
+    const res = await fetch(`/api/ingredients/${ing}`);
+    const data = await res.json();
+    setIngredientDetails(data);
   };
 
   return (
@@ -34,10 +47,10 @@ const RecipeCard = () => {
           >
             <div className="relative aspect-video overflow-hidden">
               <Image
-                className="absolute h-96 object-cover transform transition-transform duration-700 hover:scale-105"
+                className="absolute h-full object-cover transform transition-transform duration-700 hover:scale-105"
                 src={item.image}
                 alt="Example"
-                width={500}
+                width={800}
                 height={500}
               />
 
@@ -66,22 +79,38 @@ const RecipeCard = () => {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="flex-grow">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                <Clock className="h-4 w-4" />
-                <span>{item?.cook_time} mins</span>
+            <CardContent className="flex-grow space-y-5">
+              <div className="inline-flex items-center justify-center gap-2">
+                <p className="font-medium">Cook Time:</p>
+                <div className="flex items-center gap-2 text-sm px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                  <Clock className="h-4 w-4" />
+                  <span>{item?.cook_time} mins</span>
+                </div>
               </div>
-
               <div className="space-y-1">
-                <p className="text-sm font-medium">Ingredients:</p>
+                <span className="flex items-center gap-2">
+                  <p className="font-medium">Ingredients:</p>
+                  <p className="text-muted-foreground">Click to see details</p>
+                </span>
                 <div className="flex flex-wrap gap-1">
                   {item?.ingredients.slice(0, 5).map((ingredient, idx) => (
-                    <span
-                      key={idx}
-                      className="text-sm px-1.5 py-0.5 rounded bg-muted text-muted-foreground"
-                    >
-                      {ingredient}
-                    </span>
+                    <Popover key={idx}>
+                      <PopoverTrigger
+                        onClick={() => handleIng(ingredient)}
+                        className="flex items-center gap-2 px-1.5 py-0.5 rounded bg-muted text-muted-foreground"
+                      >
+                        {ingredient} <ArrowUp className="w-4 h-4" />
+                      </PopoverTrigger>
+                      <PopoverContent className="w-fit">
+                        {ingredientDetails ? (
+                          <IngDetails
+                            ingredientDetails={ingredientDetails}
+                          ></IngDetails>
+                        ) : (
+                          <div className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"></div>
+                        )}
+                      </PopoverContent>
+                    </Popover>
                   ))}
                   {item.ingredients.length > 5 && (
                     <span className="text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
@@ -94,10 +123,7 @@ const RecipeCard = () => {
 
             <CardFooter className="pt-1 flex justify-between">
               <Button size="sm" variant="outline" className="text-xs" asChild>
-                <Link
-                  href={`/recipes/${item.id}`}
-                  className="button-color bgt"
-                >
+                <Link href={`/recipes/${item.id}`} className="button-color bgt">
                   <ChefHat className="h-5 w-5 mr-1 text-[#ff9e42]" />
                   View Recipe
                 </Link>

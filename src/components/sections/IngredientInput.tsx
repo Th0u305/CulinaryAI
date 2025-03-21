@@ -165,25 +165,31 @@ const IngredientInput = () => {
         )}
       </div>
       <div className="flex flex-wrap gap-2 h-52 overflow-y-scroll p-2 bg-background/50 backdrop-blur-sm rounded-lg border">
-        {ingredientName.map((item, index) => (
-          <div
-            key={index}
-            className={cn(
-              "px-3 py-1.5 rounded-full text-sm font-medium bg-primary/10 dark:text-white dark:bg-primary/20 flex items-center gap-1.5 animate-fade-in"
-            )}
-          >
-            {item}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => addIngredient(item)}
-              className="h-4 w-4 p-0 rounded-full hover:bg-primary/20 "
-              aria-label={`Remove ${item}`}
+        {ingredientName.length > 0 ? (
+          ingredientName.map((item, index) => (
+            <div
+              key={index}
+              className={cn(
+                "px-3 py-1.5 rounded-full text-sm font-medium bg-primary/10 dark:text-white dark:bg-primary/20 flex items-center gap-1.5 animate-fade-in"
+              )}
             >
-              <PlusIcon className="h-8 w-8" />
-            </Button>
+              {item}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => addIngredient(item)}
+                className="h-4 w-4 p-0 rounded-full hover:bg-primary/20 "
+                aria-label={`Remove ${item}`}
+              >
+                <PlusIcon className="h-8 w-8" />
+              </Button>
+            </div>
+          ))
+        ) : (
+          <div className="col-span-full">
+            <div className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin mx-auto mt-8 mb-8"></div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

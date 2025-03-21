@@ -6,7 +6,7 @@ const About = () => {
     <div className="min-h-screen mt-48 pb-16 px-4">
       <div className="container mx-auto animate-fade-in">
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold tracking-tight mb-3 md:text-4xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+          <h1 className="text-3xl h-16 font-bold tracking-tight md:text-4xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
             About CulinaryAI
           </h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">

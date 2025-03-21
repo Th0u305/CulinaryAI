@@ -1,6 +1,7 @@
 "use client";
 
 import Loading from "@/app/loading";
+import IngDetails from "@/components/sections/IngDetails";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,7 +29,8 @@ const SingleRecipe = () => {
   const pathname = usePathname();
   const recipeId = pathname?.split("/")[2];
   const [singleData, setSingleData] = useState<Recipes | null>(null);
-  const [ingredientDetails, setIngredientDetails] = useState<Ingredients | null>(null);
+  const [ingredientDetails, setIngredientDetails] =
+    useState<Ingredients | null>(null);
 
   const fetchRecipeById = async (id: string) => {
     const data = await fetch(`/api/recipes/${id}`).then((res) => res.json());
@@ -72,13 +74,14 @@ const SingleRecipe = () => {
     const res = await fetch(`/api/ingredients/${ing}`);
     const data = await res.json();
     setIngredientDetails(data);
-    console.log(data);
-    
   };
 
   return (
     <div className="p-4">
-      <Card className="max-w-2xl mx-auto mt-36 mb-20 overflow-hidden transition-all duration-300 hover:shadow-lg glass-card h-full flex flex-col">
+      <h1 className="text-3xl md:text-4xl mt-36 w-fit mx-auto mb-12">
+        Recipe
+      </h1>
+      <Card className="max-w-2xl mx-auto mb-20 overflow-hidden transition-all duration-300 hover:shadow-lg glass-card h-full flex flex-col">
         <div className="relative aspect-video overflow-hidden">
           <Image
             className="absolute h-96 object-cover transform transition-transform duration-700 hover:scale-105"
@@ -137,26 +140,9 @@ const SingleRecipe = () => {
                   </PopoverTrigger>
                   <PopoverContent className="w-fit">
                     {ingredientDetails ? (
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-xl font-semibold line-clamp-1">
-                          {ingredientDetails?.name || ingredient || "Data not available"}
-                        </CardTitle>
-                        <CardDescription className="line-clamp-2 text-base">
-                          <p>Category : {ingredientDetails?.category || "Data not available"}</p>
-                        </CardDescription>
-                        <CardContent className="p-0">
-                          <p>Calories per 100g: {ingredientDetails?.calories_per_100g || "Data not available"}</p>
-                          <span>
-                            <h1>Nutrients</h1>
-                            <p>Carbohydrates: {ingredientDetails?.nutrients?.carbohydrates || "Data not available"}</p>
-                            <p>Fats: {ingredientDetails?.nutrients?.fats || "Data not available"}</p>
-                            <p>Proteins: {ingredientDetails?.nutrients?.proteins || "Data not available"}</p>
-                          </span>
-                          <p>Allergens: {ingredientDetails?.allergens || "None"}</p>
-                          <p>Origins: {ingredientDetails?.origin || "Data not available"}</p>
-                        </CardContent>
-                        <CardFooter></CardFooter>
-                      </CardHeader>
+                      <IngDetails
+                        ingredientDetails={ingredientDetails}
+                      ></IngDetails>
                     ) : (
                       <div className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"></div>
                     )}

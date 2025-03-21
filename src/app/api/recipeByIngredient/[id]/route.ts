@@ -13,9 +13,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     }
   
     try {
-      const ingredient = await prisma.ingredients.findFirst({
+      const ingredient = await prisma.recipes.findMany({
         where: {
-          name: {
+          country: {
             equals: id,
             mode: "insensitive", // Case-insensitive search
           },
