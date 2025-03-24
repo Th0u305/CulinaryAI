@@ -16,7 +16,13 @@ const useAllData = () => {
     loading,
     setLoading,
     currentPage,
-    setCurrentPage
+    setCurrentPage,
+    activeCuisine,
+    setActiveCuisine,
+    isAuthenticated,
+    setIsAuthenticated,
+    userData,
+    setUserData
   } = useContext(ContextData);
   return {
     recipes,
@@ -32,7 +38,13 @@ const useAllData = () => {
     loading,
     setLoading,
     currentPage,
-    setCurrentPage
+    setCurrentPage,
+    activeCuisine,
+    setActiveCuisine,
+    isAuthenticated,
+    setIsAuthenticated,
+    userData,
+    setUserData
   };
 };
 

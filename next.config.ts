@@ -9,8 +9,28 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname: "/**",
+      },
     ],
 
+  },
+  async redirects() {
+    return [
+      // Basic redirect
+      {
+        source: '/login',
+        destination: '/api/auth/login',
+        permanent: true,
+      },
+      {
+        source: '/register',
+        destination: '/api/auth/register',
+        permanent: true,
+      },
+    ]
   },
 };
 

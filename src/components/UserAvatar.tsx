@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,9 +13,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserIcon, HelpCircle, LogOut, Settings } from "lucide-react";
 import Link from 'next/link';
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import useAllData from '@/hooks/useAllData';
 
 const UserAvatar = () => {
   const [open, setOpen] = useState(false);
+  const {userData} = useAllData()  
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -30,9 +35,9 @@ const UserAvatar = () => {
       <DropdownMenuContent className="w-56 glass" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">User</p>
+            <p className="text-sm font-medium leading-none">{userData?.given_name || "User"}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              user@example.com
+              {userData?.email || "user@example.com"}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -44,13 +49,13 @@ const UserAvatar = () => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="cursor-pointer">
-          <Link href="/profile">
+          <Link href="/dashboard">
             <UserIcon className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="cursor-pointer">
-          <Link href="/help">
+          <Link href="/dashboard">
             <HelpCircle className="mr-2 h-4 w-4" />
             <span>Help</span>
           </Link>
@@ -58,7 +63,7 @@ const UserAvatar = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <span><LogoutLink>Log Out</LogoutLink></span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

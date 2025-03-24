@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           AND: [
             {
               OR: [
-                { name: { contains: searchItem as string, mode: "insensitive", }, },
+                { name: { contains: searchItem as string, mode: "insensitive", } },
               ],
             },
           ],

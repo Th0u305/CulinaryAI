@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Recipes from "@/typeHooks/types-recipe";
 import Ingredients from "@/typeHooks/types-recipe";
+import User from "@/typeHooks/userType"
 import {
   createContext,
   Dispatch,
@@ -12,6 +13,7 @@ import {
   useState,
 } from "react";
 import Loading from "@/app/loading";
+import { KindeProvider, useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 
 interface ContextProviderProps {
   children: ReactNode;
@@ -32,8 +34,14 @@ type RecipesContextType = {
   setLoading: Dispatch<SetStateAction<boolean>>;
   loader: boolean;
   setLoader: Dispatch<SetStateAction<boolean>>;
-  currentPage : number;
-  setCurrentPage : Dispatch<SetStateAction<number>>
+  currentPage: number;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+  activeCuisine : string
+  setActiveCuisine : Dispatch<SetStateAction<string>>
+  isAuthenticated : boolean
+  setIsAuthenticated : Dispatch<SetStateAction<boolean>>
+  userData: User | null;
+  setUserData: Dispatch<SetStateAction<User | null>>;
 };
 
 const defaultContextValue: RecipesContextType = {
@@ -51,8 +59,14 @@ const defaultContextValue: RecipesContextType = {
   setLoading: () => {},
   loader: false,
   setLoader: () => {},
-  currentPage : 1,
-  setCurrentPage : () => {}
+  currentPage: 1,
+  setCurrentPage: () => {},
+  activeCuisine : "all",
+  setActiveCuisine : () => {},
+  isAuthenticated : false,
+  setIsAuthenticated : () => {},
+  userData: null, 
+  setUserData: () => {}
 };
 
 const ContextData = createContext<RecipesContextType>(defaultContextValue);
@@ -66,8 +80,36 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [loader, setLoader] = useState<boolean>(false);
   const pathname = usePathname();
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [activeCuisine, setActiveCuisine] = useState<string>("all");
+  const { user, isLoading} = useKindeAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userData, setUserData] = useState<User | null>(null);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/getData");
+        const data = await res.json();        
+        setUserData(data.user)
+        setIsAuthenticated(data.isUserAuthenticated);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+    fetchUser();
+  }, []);
+  
+  useEffect(() => {
+    if (!isLoading && user) {
+      // Sync user data with MongoDB
+      fetch("/api/auth/syncUser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      })
+    }
+  }, [isLoading, user]);
+  
   useEffect(() => {
     fetch("/api/recipes")
       .then((res) => res?.json())
@@ -78,29 +120,28 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
       .catch((err) => console.error("Fetch error:", err));
   }, [pathname]);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetch("/api/limitIngredients")
-      .then((res)=> res.json())
-      .then((data)=>{
-        setAllIngredients(data)
-        setLimitIngredients(
-          data?.sort(()=> Math.random() - 0.6)?.slice(0,3)
-        )
-      })
-  },[])
-
+      .then((res) => res.json())
+      .then((data) => {
+        setAllIngredients(data);
+        setLimitIngredients(data?.sort(() => Math.random() - 0.6)?.slice(0, 3));
+      });
+  }, []);
 
   useEffect(() => {
-    const data = allIngredients?.map((item: Ingredients) => item?.name)
-    setIngredientName(data);
-  }, [allIngredients]);
+    const splits = recipes.slice(0,12)
+    const ingName = ((pathname === "/" ? splits : recipes).map((item)=> item.ingredients)).flat()
+    const concat = ingName.concat(ingName)
+    const unique = [...new Set(concat)]
+    setIngredientName(unique)
+  }, [recipes,pathname]);
 
-
-  useEffect(()=>{
+  useEffect(() => {
     if (recipes.length > 0 && allIngredients.length > 0) {
-      setLoader(true)
+      setLoader(true);
     }
-  },[recipes,allIngredients])
+  }, [recipes, allIngredients]);
 
   const data = {
     recipes,
@@ -118,13 +159,19 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
     loader,
     setLoader,
     currentPage,
-    setCurrentPage
+    setCurrentPage,
+    activeCuisine,
+    setActiveCuisine,
+    isAuthenticated,
+    setIsAuthenticated,
+    userData,
+    setUserData
   };
 
   return (
     <ContextData.Provider value={data}>
       {loader ? (
-        children
+        <KindeProvider>{children}</KindeProvider>
       ) : (
         <div className="w-full h-screen flex justify-center items-center">
           <Loading />

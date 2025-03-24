@@ -5,9 +5,9 @@ import Middle from "@/components/sections/Middle";
 export default function Home() {
   return (
     <section className="">
-      <Hero/>
-      <Middle/>
-      <Footer/>
+      <Hero />
+      <Middle />
+      <Footer />
     </section>
   );
 }

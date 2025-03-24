@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ page
       skip: (pages - 1) * 12, // item per page
       take: 12, // total item taken
       where: {
-        country: cuisine !== "all" ? { equals: cuisine } : undefined, // Show all if cuisine is "all"
+        country: cuisine !== "all" ? { equals: cuisine , mode : "insensitive"} : undefined, // Show all if cuisine is "all"
       },
     });
 

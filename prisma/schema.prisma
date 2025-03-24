@@ -49,4 +49,9 @@ model recipes {
 
 model usersData {
   id String @id @default(auto()) @map("_id") @db.ObjectId
+  kindeId   String   @unique // Kinde's user ID
+  email     String?  @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

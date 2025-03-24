@@ -9,8 +9,11 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { ChevronRight, Heart, History, Plus, Settings, Bookmark, Bell } from 'lucide-react';
+import useAllData from '@/hooks/useAllData';
 
 const Dashboard = () => {
+
+  const {userData} = useAllData()
 
   return (
     <div className="min-h-screen mt-48 pb-16 px-4">
@@ -173,16 +176,16 @@ const Dashboard = () => {
               <CardContent className="space-y-4">
                 <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6 mb-6">
                   <Avatar className="h-24 w-24">
-                    <AvatarImage src="/placeholder.svg" alt="User" />
-                    <AvatarFallback className="text-2xl">U</AvatarFallback>
+                    <AvatarImage src={userData?.picture} alt="User" />
+                    <AvatarFallback className="text-2xl">{userData?.given_name?.split("")[0]}</AvatarFallback>
                   </Avatar>
                   
                   <div className="space-y-2 flex-grow">
                     <Label htmlFor="profile-name">Name</Label>
-                    <Input id="profile-name" defaultValue="User" />
+                    <Input id="profile-name" defaultValue={userData?.given_name || "User"} />
                     
                     <Label htmlFor="profile-email" className="mt-4">Email</Label>
-                    <Input id="profile-email" defaultValue="user@example.com" />
+                    <Input id="profile-email" defaultValue={userData?.email || "user@example.com"} />
                     
                     <div className="pt-4">
                       <Button className=' bg-[#ff9e42] hover:bg-[#ff9e42] button-color'>Save Changes</Button>

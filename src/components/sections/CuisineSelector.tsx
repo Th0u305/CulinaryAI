@@ -9,9 +9,8 @@ interface CuisineSelectorProps {
 }
 
 const CuisineSelector = ({ onCuisineChange }: CuisineSelectorProps) => {
-  const [activeCuisine, setActiveCuisine] = useState("");
   const [filterRecipe, setFilterRecipe] = useState<string[]>([]);
-  const { recipes } = useAllData();
+  const { recipes, activeCuisine , setActiveCuisine } = useAllData();
 
   useEffect(() => {
     const unique = recipes.map((item) => item.country);

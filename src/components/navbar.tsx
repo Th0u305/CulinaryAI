@@ -1,20 +1,27 @@
 "use client";
 
+import React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ThemeToggle";
 import UserAvatar from "./UserAvatar";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  LoginLink,
+  RegisterLink,
+} from "@kinde-oss/kinde-auth-nextjs/components";
+import { usePathname } from "next/navigation";
+import useAllData from "@/hooks/useAllData";
 
 const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
+  const [scrolled, setScrolled] = useState<boolean>(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const isMobile = useIsMobile();
+  const pathname = usePathname();
+  const {isAuthenticated} = useAllData()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,9 +52,9 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <span className="font-semibold tracking-tight text-xl md:text-2xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+          <h1 className="font-semibold tracking-tight text-xl md:text-2xl bg-clip-text text-white dark:text-transparent bg-gradient-to-r from-primary to-primary/70">
             CulinaryAI
-          </span>
+          </h1>
         </Link>
 
         {/* Desktop Navigation */}
@@ -60,7 +67,7 @@ const Navbar = () => {
                 "text-md font-medium transition-colors hover:text-primary relative py-2",
                 isActive(item.path)
                   ? 'text-primary after:content-[""] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:rounded-full'
-                  : "text-foreground/70 hover:text-foreground/90"
+                  : "dark:text-foreground/70 hover:text-foreground/90"
               )}
             >
               {item.name}
@@ -70,7 +77,18 @@ const Navbar = () => {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <UserAvatar />
+          {isAuthenticated  ? (
+            <UserAvatar />
+          ) : (
+            <>
+              <Button className="button-color bg-[#ff9e42] text-black hover:bg-[#ff9e42]">
+                <LoginLink>Login</LoginLink>
+              </Button>
+              <Button className="button-color">
+                <RegisterLink>SignUp</RegisterLink>
+              </Button>
+            </>
+          )}
 
           {/* Mobile Menu Button */}
           <Button
@@ -111,5 +129,5 @@ const Navbar = () => {
     </header>
   );
 };
-Navbar.displayname="Nav"
+
 export default Navbar;

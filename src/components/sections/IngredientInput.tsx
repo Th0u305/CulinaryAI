@@ -9,9 +9,6 @@ import { useForm } from "react-hook-form";
 import Ingredients from "@/typeHooks/types-recipe";
 import { useState } from "react";
 
-// interface IngredientInputProps {
-//   onIngredientsChange: (ingredients: string[]) => void;
-// }
 
 type FormData = {
   name: string;
@@ -22,18 +19,8 @@ export interface IngredientsName {
 }
 
 const IngredientInput = () => {
-  const {
-    limitIngredients,
-    setLimitIngredients,
-    ingredientName,
-    setIngredientName,
-  } = useAllData();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: {},
-  } = useForm<FormData>();
+  const { limitIngredients,setLimitIngredients,ingredientName,setIngredientName } = useAllData();
+  const {register,handleSubmit,reset,formState: {}} = useForm<FormData>();
   const [errorMSG, setErrorMSG] = useState("");
 
   const onSubmit = handleSubmit((data) => {
@@ -164,7 +151,7 @@ const IngredientInput = () => {
           </div>
         )}
       </div>
-      <div className="flex flex-wrap gap-2 h-52 overflow-y-scroll p-2 bg-background/50 backdrop-blur-sm rounded-lg border">
+      <div className="flex flex-wrap gap-2 h-[15.6rem] overflow-y-scroll p-2 bg-background/50 backdrop-blur-sm rounded-lg border">
         {ingredientName.length > 0 ? (
           ingredientName.map((item, index) => (
             <div

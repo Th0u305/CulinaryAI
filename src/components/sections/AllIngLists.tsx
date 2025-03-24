@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Ingredients from "@/typeHooks/types-recipe";
 import IngDetails from "./IngDetails";
-import Pagination from "../ui/pagination";
 import { cn } from "@/lib/utils";
 import useAllData from "@/hooks/useAllData";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -20,6 +19,7 @@ const AllIngLists = () => {
     register,
     handleSubmit,
     formState: {},
+    reset,
   } = useForm<Inputs>();
 
   const [ingredientDetails, setIngredientDetails] =
@@ -27,13 +27,14 @@ const AllIngLists = () => {
   const [allIngredients, setAllIngredients] = useState<string[]>([]);
   const [activeIngredient, setActiveIngredient] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
   const { currentPage } = useAllData();
 
   useEffect(() => {
-    fetch(`/api/ingredients/all/${currentPage}`)
+    fetch(`/api/ingredients/all`)
       .then((res) => res.json())
       .then((data: Ingredients[]) => {
-        const mapped = data.map((item) => item.name);
+        const mapped = data?.map((item) => item?.name);
         setAllIngredients([...new Set(mapped)]);
       });
   }, [currentPage]);
@@ -50,11 +51,17 @@ const AllIngLists = () => {
   };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
+    setAllIngredients([]);
     fetch(`/api/inputSearch/${data.ingredients}/ingredients`)
       .then((res) => res.json())
       .then((data: Ingredients[]) => {
         const mapped = data.map((item) => item.name);
-        setAllIngredients(mapped);
+        setLoading2(true);
+        setTimeout(() => {
+          setLoading2(false);
+          setAllIngredients(mapped);
+        }, 1000);
+        reset();
       });
   };
 
@@ -62,10 +69,11 @@ const AllIngLists = () => {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="relative mt-14 flex gap-3 max-w-3xl mx-auto mb-14"
+        className="relative mt-14 flex gap-3 w-[90%] sm:w-[80%] md:w-[68%] mx-auto mb-14"
       >
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
+          required
           {...register("ingredients")}
           placeholder="Search Ingredients"
           className="pl-10"
@@ -78,8 +86,16 @@ const AllIngLists = () => {
           Search
         </Button>
       </form>
-      <h3 className="text-md font-medium mb-3">Select ingredient</h3>
-      <div className="flex flex-wrap gap-2 rounded-lg border p-2 overflow-y-scroll items-center">
+      {allIngredients.length > 0 ? (
+        <h3 className="text-xl font-medium mb-3 w-full sm:w-[80%] md:w-[68%] mx-auto">
+          Select ingredient
+        </h3>
+      ) : (
+        <h3 className="text-xl font-medium mb-3 w-full sm:w-[80%] md:w-[68%] mx-auto">
+          Searching...
+        </h3>
+      )}
+      <div className="flex flex-wrap gap-2 rounded-lg border p-2 overflow-y-scroll items-center w-full sm:w-[80%] md:w-[68%] mx-auto">
         {allIngredients.length > 0 ? (
           allIngredients?.map((item, index) => (
             <button
@@ -92,7 +108,11 @@ const AllIngLists = () => {
                   : "bg-primary/10 hover:bg-muted text-foreground/80"
               )}
             >
-              {item}
+              {loading2 ? (
+                <div className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin mx-auto mt-8 mb-8"></div>
+              ) : (
+                item
+              )}
             </button>
           ))
         ) : (
@@ -114,7 +134,6 @@ const AllIngLists = () => {
           )}
         </div>
       )}
-      <Pagination></Pagination>
     </>
   );
 };
