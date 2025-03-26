@@ -19,19 +19,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    try {
-
-      const verify = await prisma.usersData.findUnique({
-        where : {
-          kindeId : user.id
-        }
-      })
-      
-      if (verify) {
-        return NextResponse.json("OK");
+    const verify = await prisma.usersData.findUnique({
+      where : {
+        kindeId : user.id
       }
+    })
+        
+    if (verify) {
+      return NextResponse.json("OK");
+    }
+    
 
-
+    try {
       const dbUser = await prisma.usersData.create({
         data :{
           kindeId: user.id,
@@ -40,7 +39,6 @@ export async function POST(req: NextRequest) {
         }
       });
       return NextResponse.json(dbUser)
-  
     } catch (error) {
       console.error(error);
       NextResponse.json({ error: "Failed to sync user" }, {status : 500});

@@ -13,7 +13,7 @@ import {
   useState,
 } from "react";
 import Loading from "@/app/loading";
-import { KindeProvider, useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
+import { KindeProvider } from "@kinde-oss/kinde-auth-nextjs";
 
 interface ContextProviderProps {
   children: ReactNode;
@@ -82,7 +82,6 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
   const pathname = usePathname();
   const [currentPage, setCurrentPage] = useState(1);
   const [activeCuisine, setActiveCuisine] = useState<string>("all");
-  const { user, isLoading} = useKindeAuth();
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [userData, setUserData] = useState<User | null>(null);
 
@@ -99,16 +98,6 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
     };
     fetchUser();
   }, []);
-  
-  useEffect(() => {
-    if (!isLoading && user) {
-      // Sync user data with MongoDB
-      fetch("/api/syncUser", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      })
-    }
-  }, [isLoading, user]);
   
   useEffect(() => {
     fetch("/api/recipes")
@@ -142,6 +131,20 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
       setLoader(true);
     }
   }, [recipes, allIngredients]);
+
+    
+  useEffect(() => {
+    const data = async () =>{
+      if (isAuthenticated && userData) {
+        // Sync user data with MongoDB
+        await fetch("/api/syncUser", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        })
+      }
+    }
+    data()
+  }, [isAuthenticated,userData]);
 
   const data = {
     recipes,
