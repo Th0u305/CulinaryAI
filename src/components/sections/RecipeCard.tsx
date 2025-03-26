@@ -23,6 +23,7 @@ import Link from "next/link";
 const RecipeCardData = () => {
     const { limitRecipe } = useAllData();
     const [ingredientDetails, setIngredientDetails] = useState<Ingredients | null>(null);
+    const {userData} = useAllData()
 
     type DifficultyLevel = "Easy" | "Medium" | "Hard";
     const difficultyColor = {
@@ -36,6 +37,14 @@ const RecipeCardData = () => {
       const data = await res.json();
       setIngredientDetails(data);
     };
+
+    const handleSaveButton = (id : string) =>{
+      fetch("/api/updateUser", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kindeId: userData?.id, recipeId: id }),
+      }).then((res)=> res.json()).then((data)=> console.log(data))
+    }
   
     return (
       <>
@@ -129,6 +138,7 @@ const RecipeCardData = () => {
                   </Link>
                 </Button>
                 <Button
+                  onClick={()=>handleSaveButton(item?.id)}
                   size="sm"
                   variant="secondary"
                   className="text-xs button-color"

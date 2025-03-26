@@ -89,7 +89,7 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/auth/getData");
+        const res = await fetch("/api/getData");
         const data = await res.json();        
         setUserData(data.user)
         setIsAuthenticated(data.isUserAuthenticated);
@@ -103,7 +103,7 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!isLoading && user) {
       // Sync user data with MongoDB
-      fetch("/api/auth/syncUser", {
+      fetch("/api/syncUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       })

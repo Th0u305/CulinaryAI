@@ -6,7 +6,7 @@ export default withAuth({
 
 export const config = {
   matcher: [
-    "/((?!_next|api|favicon.ico|public|static|$).*)", // Exclude `/`
+    "/((?!_next|api|about|contact|favicon.ico|public|static|$).*)", // Exclude `/`
     '/dashboard',
     '/recipes/:path*'
   ],
