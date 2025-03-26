@@ -15,17 +15,11 @@ import { UserIcon, HelpCircle, LogOut, Settings } from "lucide-react";
 import Link from 'next/link';
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import useAllData from '@/hooks/useAllData';
-import { useRouter } from 'next/navigation';
-// import { useRouter } from 'next/router'
 
 const UserAvatar = () => {
   const [open, setOpen] = useState(false);
   const {userData} = useAllData()  
-  const router = useRouter()
 
-  const handleClick = () => {
-    router.push("/dashboard")
-  }
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -50,10 +44,10 @@ const UserAvatar = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className="cursor-pointer">
-          <Button onClick={handleClick}>
+          <Link href="/dashboard">
             <Settings className="mr-2 h-4 w-4" />
             <span>Dashboard</span>
-          </Button>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="cursor-pointer">
           <Link href="/dashboard">

@@ -27,22 +27,19 @@ export async function POST(req: NextRequest) {
         }
       })
       
-      
       if (verify) {
         return NextResponse.json("OK");
       }
 
 
-      if (!verify) {
-        const dbUser = await prisma.usersData.create({
-          data :{
-            kindeId: user.id,
-            email: user.email,
-            name: user.given_name || user.family_name || "",
-          }
-        });
-        return NextResponse.json(dbUser)
-      }
+      const dbUser = await prisma.usersData.create({
+        data :{
+          kindeId: user.id,
+          email: user.email,
+          name: user.given_name || user.family_name || "",
+        }
+      });
+      return NextResponse.json(dbUser)
   
     } catch (error) {
       console.error(error);

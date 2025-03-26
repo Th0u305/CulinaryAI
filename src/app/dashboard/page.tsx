@@ -24,19 +24,24 @@ import {
   Bell,
 } from "lucide-react";
 import useAllData from "@/hooks/useAllData";
-// import { useState } from "react";
-// import Recipes from "@/typeHooks/types-recipe";
+import { useState } from "react";
+import Recipes from "@/typeHooks/types-recipe";
+import SavedRecipes from "@/components/sections/SavedRecipes";
 
 const Dashboard = () => {
   const { userData } = useAllData();
-  // const [savedRecipes, setSavedRecipes] = useState<Recipes[]>();
+  const [savedRecipes, setSavedRecipes] = useState<Recipes[]>([]);
+  const [loading, setLoading] = useState(false) 
 
-  // const handleSavedRecipes = async () => {
-  //   const data = await fetch(`/api/getUserRecipe/${userData?.id}`).then((res) =>
-  //     res.json()
-  //   );
-  //   setSavedRecipes(data.savedRecipeId);
-  // };
+  const handleSavedRecipes = async () => {
+    const data = await fetch(`/api/getUserRecipe/${userData?.id}`).then((res) =>
+      res.json()
+    );
+    setLoading(true)
+    setTimeout(() => {
+      setSavedRecipes(data);
+    }, 500);
+  };
 
   return (
     <div className="min-h-screen mt-48 pb-16 px-4">
@@ -60,7 +65,7 @@ const Dashboard = () => {
           <TabsContent value="recipes" className="space-y-6">
             <div className="flex flex-wrap gap-4 mb-6">
               <Button
-                // onClick={() => handleSavedRecipes()}
+                onClick={() => handleSavedRecipes()}
                 variant="outline"
                 className="flex items-center gap-2 button-color"
               >
@@ -91,6 +96,7 @@ const Dashboard = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+             {loading && ( <SavedRecipes savedRecipe={savedRecipes}/>)}
               <Card className="flex flex-col items-center justify-center h-full min-h-[300px] border-dashed">
                 <CardContent className="py-8 flex flex-col items-center text-center">
                   <div className="rounded-full bg-primary/10 p-3 mb-4">
