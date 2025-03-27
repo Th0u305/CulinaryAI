@@ -8,23 +8,23 @@ export async function GET(req: NextRequest, {params}: {params: Promise<{id : str
   const {id} = await params
 
   try {
-    const savedRecipeId = await prisma.usersData.findUnique({
-        where : {
-          kindeId : id
-        },
-        select:{
-            savedRecipeId : true
-        }
+    
+    const favRecipeId = await prisma.usersData.findUnique({
+      where : {
+        kindeId : id
+      },
+      select:{
+        favoriteRecipeId : true
+      }
     });
 
-    const savedRecipeIds = savedRecipeId?.savedRecipeId ?? []
+    const allFavRecipeIds = favRecipeId?.favoriteRecipeId ?? []
     
-
     const findRecipe = await prisma.recipes.findMany({
-        where : {id : {in : savedRecipeIds}}
+      take : 4,
+      where : {id : {in : allFavRecipeIds}}
     })
     
-
     return NextResponse.json(findRecipe)
     
   } catch (error) {

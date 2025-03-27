@@ -64,7 +64,7 @@ const UserAvatar = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
-          <span><LogoutLink>Log Out</LogoutLink></span>
+          <LogoutLink>Log Out</LogoutLink>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -27,21 +27,58 @@ import useAllData from "@/hooks/useAllData";
 import { useState } from "react";
 import Recipes from "@/typeHooks/types-recipe";
 import SavedRecipes from "@/components/sections/SavedRecipes";
+import { toast } from "sonner";
 
 const Dashboard = () => {
+  
   const { userData } = useAllData();
   const [savedRecipes, setSavedRecipes] = useState<Recipes[]>([]);
-  const [loading, setLoading] = useState(false) 
+  const [loading, setLoading] = useState<boolean>(false);
+  const [reps,setReps] = useState<string>("save")
+
 
   const handleSavedRecipes = async () => {
-    const data = await fetch(`/api/getUserRecipe/${userData?.id}`).then((res) =>
-      res.json()
+    
+    setSavedRecipes([])
+    setLoading(true);
+    const data = await fetch(`/api/getUserSavedRecipe/${userData?.kindeId}`).then(
+      (res) => res.json()
     );
-    setLoading(true)
+
+    if (data[0]?.id === userData?.savedRecipeId[0]) {
+      setReps("save")
+    }
+
+    if (data.length === 0) {
+      setLoading(false);
+      return toast.error("No saved recipes found");
+    }
+    setTimeout(() => {
+      setSavedRecipes(data);
+    }, 500);
+  };  
+
+  const handleFavorite = async () => {
+    
+    setSavedRecipes([])
+    setLoading(true);
+    const data = await fetch(`/api/getUserFavoriteRecipe/${userData?.kindeId}`).then(
+      (res) => res.json()
+    );
+    
+    if (data[0]?.id === userData?.savedRecipeId[0]) {
+      setReps("fav")
+    }
+
+    if (data?.length === 0) {
+      setLoading(false);
+      return toast.error("No favorite recipes found");
+    }
     setTimeout(() => {
       setSavedRecipes(data);
     }, 500);
   };
+
 
   return (
     <div className="min-h-screen mt-48 pb-16 px-4">
@@ -73,6 +110,7 @@ const Dashboard = () => {
                 Saved Recipes
               </Button>
               <Button
+                onClick={() => handleFavorite()}
                 variant="outline"
                 className="flex items-center gap-2 button-color"
               >
@@ -96,8 +134,16 @@ const Dashboard = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-             {loading && ( <SavedRecipes savedRecipe={savedRecipes}/>)}
-              <Card className="flex flex-col items-center justify-center h-full min-h-[300px] border-dashed">
+              {loading && (
+                <SavedRecipes
+                  savedRecipe={savedRecipes}
+                  setSavedRecipe={setSavedRecipes}
+                  setLoading={setLoading}
+                  reps={reps}
+                />
+              )}
+              {reps === "save" && (
+                <Card className="flex flex-col items-center justify-center h-full min-h-[300px] border-dashed">
                 <CardContent className="py-8 flex flex-col items-center text-center">
                   <div className="rounded-full bg-primary/10 p-3 mb-4">
                     <Plus className="h-6 w-6 text-primary" />
@@ -114,6 +160,7 @@ const Dashboard = () => {
                   </Button>
                 </CardContent>
               </Card>
+              )}
             </div>
           </TabsContent>
 

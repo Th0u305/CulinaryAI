@@ -36,6 +36,8 @@ export async function POST(req: NextRequest) {
           kindeId: user.id,
           email: user.email,
           name: user.given_name || user.family_name || "",
+          savedRecipeId : [],
+          favoriteRecipeId : []
         }
       });
       return NextResponse.json(dbUser)

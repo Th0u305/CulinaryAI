@@ -55,4 +55,5 @@ model usersData {
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
   savedRecipeId    String[]
+  favoriteRecipeId  String[]
 }

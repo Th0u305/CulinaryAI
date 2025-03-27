@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   Card,
   CardContent,
@@ -8,17 +8,29 @@ import {
   CardTitle,
 } from "../ui/card";
 import Image from "next/image";
-import { ChefHat, Clock, DeleteIcon } from "lucide-react";
+import { ChefHat, Clock, DeleteIcon, Heart } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import Recipes from "@/typeHooks/types-recipe";
 import Link from "next/link";
+import useAllData from "@/hooks/useAllData";
+import { toast } from "sonner";
 
 type recipe = {
   savedRecipe: Recipes[];
+  setSavedRecipe: Dispatch<SetStateAction<Recipes[]>>;
+  setLoading: Dispatch<SetStateAction<boolean>>;
+  reps: string;
 };
 
-const SavedRecipes = ({ savedRecipe }: recipe) => {
+const SavedRecipes = ({
+  savedRecipe,
+  setLoading,
+  setSavedRecipe,
+  reps,
+}: recipe) => {
+  const { userData } = useAllData();
+
   type DifficultyLevel = "Easy" | "Medium" | "Hard";
   const difficultyColor = {
     Easy: "text-green-500",
@@ -26,10 +38,43 @@ const SavedRecipes = ({ savedRecipe }: recipe) => {
     Hard: "text-red-500",
   };
 
-  const deleteSave = (id:string) => {
-console.log(id);
+  const deleteSave = async (id: string) => {
+    const deleteRecipe = await fetch("/api/updateUser/deleteSave", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kindeId: userData?.id, recipeId: id }),
+    }).then((res) => res.json());
 
-  }
+    if (deleteRecipe) {
+      if (deleteRecipe?.error) {
+        return toast.error("Something went wrong");
+      }
+      setSavedRecipe(savedRecipe.filter((item) => item.id !== id));
+      if (savedRecipe.length === 1) {
+        setLoading(false);
+      }
+      return toast.success("Successfully deleted saved recipe");
+    }
+  };
+
+  const deleteFavorite = async (id: string) => {
+    const deleteRecipe = await fetch("/api/updateUser/delete", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kindeId: userData?.id, recipeId: id }),
+    }).then((res) => res.json());
+
+    if (deleteRecipe) {
+      if (deleteRecipe?.error) {
+        return toast.error("Something went wrong");
+      }
+      setSavedRecipe(savedRecipe.filter((item) => item.id !== id));
+      if (savedRecipe.length === 1) {
+        setLoading(false);
+      }
+      return toast.success("Successfully deleted saved recipe");
+    }
+  };
 
   return (
     <>
@@ -40,6 +85,17 @@ console.log(id);
             className="overflow-hidden transition-all duration-300 hover:shadow-lg glass-card h-full flex flex-col"
           >
             <div className="relative aspect-video overflow-hidden">
+              {reps === "fav" && (
+                <Button
+                  onClick={() => deleteFavorite(item?.id)}
+                  variant="ghost"
+                  size="sm"
+                  className="bg-red-100 absolute z-50 right-2 top-2 button-color hover:bg-red-100 text-black hover:text-black"
+                >
+                  <Heart className="text-red-700" />
+                  Remove
+                </Button>
+              )}
               <Image
                 className="absolute h-full object-cover transform transition-transform duration-700 hover:scale-105"
                 src={item.image}
@@ -84,7 +140,7 @@ console.log(id);
             </CardContent>
 
             <CardFooter className="pt-1 flex justify-between">
-              <Button size="lg" variant="outline" className="text-" asChild>
+              <Button size="sm" variant="outline" className="text-" asChild>
                 <Link
                   href={`/recipes/${item?.id}`}
                   className="button-color bgt"
@@ -94,8 +150,8 @@ console.log(id);
                 </Link>
               </Button>
               <Button
-                  onClick={()=>deleteSave(item?.id)}
-                size="lg"
+                onClick={() => deleteSave(item?.id)}
+                size="sm"
                 variant="secondary"
                 className="text-sm button-color"
               >
