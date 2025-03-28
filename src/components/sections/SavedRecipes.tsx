@@ -42,7 +42,7 @@ const SavedRecipes = ({
     const deleteRecipe = await fetch("/api/updateUser/deleteSave", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ kindeId: userData?.id, recipeId: id }),
+      body: JSON.stringify({ kindeId: userData?.kindeId, recipeId: id }),
     }).then((res) => res.json());
 
     if (deleteRecipe) {
@@ -58,10 +58,10 @@ const SavedRecipes = ({
   };
 
   const deleteFavorite = async (id: string) => {
-    const deleteRecipe = await fetch("/api/updateUser/delete", {
+    const deleteRecipe = await fetch("/api/updateUser/deleteFavorite", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ kindeId: userData?.id, recipeId: id }),
+      body: JSON.stringify({ kindeId: userData?.kindeId, recipeId: id }),
     }).then((res) => res.json());
 
     if (deleteRecipe) {
@@ -149,15 +149,17 @@ const SavedRecipes = ({
                   View Recipe
                 </Link>
               </Button>
-              <Button
-                onClick={() => deleteSave(item?.id)}
-                size="sm"
-                variant="secondary"
-                className="text-sm button-color"
-              >
-                <DeleteIcon className="h-8 w-8" />
-                Remove
-              </Button>
+              {reps === "save" && (
+                <Button
+                  onClick={() => deleteSave(item?.id)}
+                  size="sm"
+                  variant="secondary"
+                  className="text-sm button-color"
+                >
+                  <DeleteIcon className="h-8 w-8" />
+                  Remove
+                </Button>
+              )}
             </CardFooter>
           </Card>
         ))

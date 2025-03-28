@@ -52,10 +52,10 @@ const AllIngLists = () => {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     setAllIngredients([]);
-    fetch(`/api/inputSearch/${data.ingredients}/ingredients`)
+    fetch(`/api/inputSearch/${data?.ingredients}/ingredients`)
       .then((res) => res.json())
       .then((data: Ingredients[]) => {
-        const mapped = data.map((item) => item.name);
+        const mapped = data?.map((item) => item?.name);
         setLoading2(true);
         setTimeout(() => {
           setLoading2(false);

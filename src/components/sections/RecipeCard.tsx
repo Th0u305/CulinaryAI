@@ -40,11 +40,11 @@ const RecipeCardData = () => {
     setIngredientDetails(data);
   };
 
-  const handleSaveButton = (id: string) => {
-    fetch("/api/updateUser/save", {
+  const handleSaveButton = async (id: string) => {
+    await fetch("/api/updateUser/save", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ kindeId: userData?.id, recipeId: id }),
+      body: JSON.stringify({ kindeId: userData?.kindeId, recipeId: id }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -55,18 +55,20 @@ const RecipeCardData = () => {
       });
   };
 
-  const handleFavorite = async (id:string) =>{
+  const handleFavorite = async (id: string) => {
     await fetch("/api/updateUser/favorite", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ kindeId: userData?.id, recipeId: id }),
-    }).then((res) => res.json()).then((data)=> {
-      if (!data?.error) {
-        return toast.success("Successfully deleted saved recipe");
-      }
-      return toast.error("Something went wrong");
+      body: JSON.stringify({ kindeId: userData?.kindeId, recipeId: id }),
     })
-  }
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.error) {
+          return toast.error("This item already exists in favorite");
+        }
+        return toast.success("Successfully saved to favorite");
+      });
+  };
 
   return (
     <>

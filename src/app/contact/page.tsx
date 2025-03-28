@@ -1,18 +1,40 @@
-"use client"
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AtSign, MapPin, Phone, Send } from 'lucide-react';
-import toast from 'react-hot-toast';
+"use client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { AtSign, MapPin, Phone, Send } from "lucide-react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { toast } from "sonner";
+
+type Inputs = {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+};
 
 const Contact = () => {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simulated form submission
-    toast.success("Event has been created.")
+  const {
+    register,
+    handleSubmit,
+    reset,
+    // watch,
+    formState: {},
+  } = useForm<Inputs>();
 
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    if (data) {
+      reset();
+      return toast.success("Event has been created.");
+    }
   };
 
   return (
@@ -26,51 +48,65 @@ const Contact = () => {
             Have questions or feedback? We d love to hear from you.
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
           <Card className="glass-card">
-            <CardHeader className='mt-6'>
+            <CardHeader className="mt-6">
               <CardTitle>Send Us a Message</CardTitle>
               <CardDescription>
-                Fill out the form below and we ll get back to you as soon as possible.
+                Fill out the form below and we ll get back to you as soon as
+                possible.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Your name" required />
+                    <Input
+                      {...register("name")}
+                      placeholder="Your name"
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="Your email" required />
+                    <Input
+                      {...register("email")}
+                      type="email"
+                      placeholder="Your email"
+                      required
+                    />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="subject">Subject</Label>
-                  <Input id="subject" placeholder="Message subject" required />
+                  <Input
+                    {...register("subject")}
+                    placeholder="Message subject"
+                    required
+                  />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="message">Message</Label>
                   <Textarea
-                    id="message"
+                    {...register("message")}
                     placeholder="Type your message here..."
                     rows={5}
                     required
                   />
                 </div>
-                
-                <Button type="submit" className="w-full sm:w-auto">
+
+                <Button type="submit" className="w-full sm:w-auto button-color">
                   <Send className="h-4 w-4 mr-2" />
                   Send Message
                 </Button>
               </form>
             </CardContent>
           </Card>
-          
+
           <div className="space-y-6">
             <Card className="glass-card">
               <CardContent className="pt-6">
@@ -87,7 +123,7 @@ const Contact = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="glass-card">
               <CardContent className="pt-6">
                 <div className="flex items-start space-x-4">
@@ -103,7 +139,7 @@ const Contact = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="glass-card">
               <CardContent className="pt-6">
                 <div className="flex items-start space-x-4">
@@ -113,15 +149,17 @@ const Contact = () => {
                   <div>
                     <h3 className="font-medium">Office</h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      123 Recipe Lane<br />
-                      San Francisco, CA 94103<br />
+                      123 Recipe Lane
+                      <br />
+                      San Francisco, CA 94103
+                      <br />
                       United States
                     </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            
+
             <div className="p-6 rounded-lg bg-muted/30 backdrop-blur-sm">
               <h3 className="font-medium mb-2">Hours of Operation</h3>
               <div className="text-sm text-muted-foreground space-y-1">
