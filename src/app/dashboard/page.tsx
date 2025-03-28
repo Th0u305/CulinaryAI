@@ -40,7 +40,9 @@ const Dashboard = () => {
 
 
   const handleSavedRecipes = async () => {
-    
+
+    setReps("save")
+
     if (!userData && !isAuthenticated) {
       return router.push("/api/auth/login")
     }
@@ -65,6 +67,8 @@ const Dashboard = () => {
   };  
 
   const handleFavorite = async () => {
+
+    setReps("fav")
 
     if (!userData && !isAuthenticated) {
       return router.push("/api/auth/login")
