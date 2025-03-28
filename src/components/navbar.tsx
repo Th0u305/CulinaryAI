@@ -46,16 +46,13 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 animate-fade-in ease-in-out py-5",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 animate-fade-in py-5",
         scrolled ? "backdrop-blur-xl shadow-xl" : "bg-transparent"
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <h1 className={cn(
-            "font-semibold tracking-tight text-xl md:text-2xl bg-clip-text text-white dark:text-transparent bg-gradient-to-r from-primary to-primary/70",
-            scrolled ? "text-black" : ""
-          )}>
+          <h1 className="font-semibold tracking-tight text-xl md:text-2xl bg-clip-text text-black dark:text-transparent bg-gradient-to-r from-primary to-primary/70">
             CulinaryAI
           </h1>
         </Link>
