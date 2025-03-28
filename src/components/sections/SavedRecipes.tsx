@@ -15,6 +15,7 @@ import Recipes from "@/typeHooks/types-recipe";
 import Link from "next/link";
 import useAllData from "@/hooks/useAllData";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type recipe = {
   savedRecipe: Recipes[];
@@ -29,7 +30,8 @@ const SavedRecipes = ({
   setSavedRecipe,
   reps,
 }: recipe) => {
-  const { userData } = useAllData();
+  const { userData , isAuthenticated} = useAllData();
+  const router = useRouter()
 
   type DifficultyLevel = "Easy" | "Medium" | "Hard";
   const difficultyColor = {
@@ -39,6 +41,9 @@ const SavedRecipes = ({
   };
 
   const deleteSave = async (id: string) => {
+    if (!userData && !isAuthenticated) {
+      return router.push("/api/auth/login")
+    }
     const deleteRecipe = await fetch("/api/updateUser/deleteSave", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -58,6 +63,9 @@ const SavedRecipes = ({
   };
 
   const deleteFavorite = async (id: string) => {
+    if (!userData && !isAuthenticated) {
+      return router.push("/api/auth/login")
+    }
     const deleteRecipe = await fetch("/api/updateUser/deleteFavorite", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },

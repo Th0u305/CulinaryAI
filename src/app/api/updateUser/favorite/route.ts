@@ -7,7 +7,7 @@ export async function PUT( req: NextRequest) {
 
   const { kindeId, recipeId } = await req.json();
 
-  if (!kindeId || !recipeId) {
+  if (!kindeId || !recipeId || kindeId === undefined || recipeId === undefined) {
     return NextResponse.json({ error: "Missing kindeId or recipeId" }, { status: 400 });
   }
 

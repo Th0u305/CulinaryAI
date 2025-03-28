@@ -8,7 +8,7 @@ export const config = {
   matcher: [
     "/((?!_next|api|about|contact|favicon.ico|public|static|$).*)", // Exclude `/`
     '/dashboard',
-    '/recipes/:path*'
+    // '/recipes/:path*'
   ],
 };
 

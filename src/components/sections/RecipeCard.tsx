@@ -20,12 +20,14 @@ import { useState } from "react";
 import Ingredients from "@/typeHooks/types-recipe";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const RecipeCardData = () => {
   const { limitRecipe } = useAllData();
   const [ingredientDetails, setIngredientDetails] =
     useState<Ingredients | null>(null);
-  const { userData } = useAllData();
+  const { userData, isAuthenticated } = useAllData();
+  const router = useRouter()
 
   type DifficultyLevel = "Easy" | "Medium" | "Hard";
   const difficultyColor = {
@@ -41,6 +43,9 @@ const RecipeCardData = () => {
   };
 
   const handleSaveButton = async (id: string) => {
+    if (!userData && !isAuthenticated) {
+      return router.push("/api/auth/login")
+    }
     await fetch("/api/updateUser/save", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -56,6 +61,9 @@ const RecipeCardData = () => {
   };
 
   const handleFavorite = async (id: string) => {
+    if (!userData && !isAuthenticated) {
+      return router.push("/api/auth/login")
+    }
     await fetch("/api/updateUser/favorite", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },

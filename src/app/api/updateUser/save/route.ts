@@ -6,8 +6,10 @@ const prisma = new PrismaClient();
 export async function PUT( req: NextRequest) {
 
   const { kindeId, recipeId } = await req.json();
+  console.log(kindeId, recipeId);
+  
 
-  if (!kindeId || !recipeId) {
+  if (!kindeId || !recipeId || kindeId === undefined || recipeId === undefined) {
     return NextResponse.json({ error: "Missing kindeId or recipeId" }, { status: 400 });
   }
 

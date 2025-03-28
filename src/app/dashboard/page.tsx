@@ -28,16 +28,22 @@ import { useState } from "react";
 import Recipes from "@/typeHooks/types-recipe";
 import SavedRecipes from "@/components/sections/SavedRecipes";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
   
-  const { userData } = useAllData();
+  const { userData, isAuthenticated } = useAllData();
   const [savedRecipes, setSavedRecipes] = useState<Recipes[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [reps,setReps] = useState<string>("save")
+  const router = useRouter()
 
 
   const handleSavedRecipes = async () => {
+    
+    if (!userData && !isAuthenticated) {
+      return router.push("/api/auth/login")
+    }
     
     setSavedRecipes([])
     setLoading(true);
@@ -59,6 +65,10 @@ const Dashboard = () => {
   };  
 
   const handleFavorite = async () => {
+
+    if (!userData && !isAuthenticated) {
+      return router.push("/api/auth/login")
+    }
     
     setSavedRecipes([])
     setLoading(true);

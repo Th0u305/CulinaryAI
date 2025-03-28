@@ -8,10 +8,10 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center space-x-2 mb-4 md:mb-0">
             <Utensils  className="h-6 w-6 text-green-500" />
-            <span className="font-bold text-lg">RecipeGen</span>
+            <span className="font-bold text-lg">CulinaryAI</span>
           </div>
           <div className="text-md text-muted-foreground">
-            © {new Date().getFullYear()} RecipeGen. All rights reserved.
+            © {new Date().getFullYear()} CulinaryAI. All rights reserved.
           </div>
         </div>
       </div>
