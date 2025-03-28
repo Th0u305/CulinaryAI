@@ -91,7 +91,7 @@ const RecipeCardData = () => {
                 onClick={() => handleFavorite(item?.id)}
                 variant="ghost"
                 size="sm"
-                className="bg-red-100 absolute z-50 right-2 top-2 button-color hover:bg-red-100"
+                className="bg-red-100 absolute z-20 right-2 top-2 button-color hover:bg-red-100"
               >
                 <Heart className="text-red-700" />
               </Button>
