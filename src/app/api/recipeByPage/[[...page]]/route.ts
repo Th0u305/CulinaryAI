@@ -3,11 +3,11 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ page: string}> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ page?: string[] }> }) {
   const { page } = await params;
   
-  const pages = parseInt(page[0])
-  const cuisine = page[1]
+  const pages = page?.[0] ? parseInt(page[0]) : 1;
+  const cuisine = page?.[1] ? page[1] : "all";
   
   // if (isNaN(pages) || pages === 0 || typeof cuisine !== "string") {
   //   return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string}> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string[] }> }) {
+  const prisma = new PrismaClient();
 
   const {id} = await params;
   
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           AND: [
             {
               OR: [
-                { name: { contains: id as string, mode: "insensitive", } },
+                { name: { contains: searchItem as string, mode: "insensitive", } },
               ],
             },
           ],
